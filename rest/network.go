@@ -6,62 +6,62 @@ import (
 )
 
 type Network struct {
-	ID    string `json:"id"`
-	Type  string `json:"type"`
-	Clock int64  `json:"clock"`
+	ID    string `json:"id,omitempty"`
+	Type  string `json:"type,omitempty"`
+	Clock int64  `json:"clock,omitempty"`
 	UI    struct {
-		Properties struct{} `json:"properties"`
-	} `json:"ui"`
+		Properties struct{} `json:"properties,omitempty"`
+	} `json:"ui,omitempty"`
 	Config struct {
-		ActiveMemberCount     int64    `json:"activeMemberCount"`
-		AuthTokens            []string `json:"authTokens"`
-		AuthorizedMemberCount int64    `json:"authorizedMemberCount"`
-		Capabilities          []string `json:"capabilities"`
-		Clock                 int64    `json:"clock"`
-		CreationTime          int64    `json:"creationTime"`
-		ID                    string   `json:"id"`
-		LastModified          int64    `json:"lastModified"`
-		MulticastLimit        int64    `json:"multicastLimit"`
-		Name                  string   `json:"name"`
-		Nwid                  string   `json:"nwid"`
-		Objtype               string   `json:"objtype"`
-		Private               bool     `json:"private"`
-		Revision              int64    `json:"revision"`
+		ActiveMemberCount     int64    `json:"activeMemberCount,omitempty"`
+		AuthTokens            []string `json:"authTokens,omitempty"`
+		AuthorizedMemberCount int64    `json:"authorizedMemberCount,omitempty"`
+		Capabilities          []string `json:"capabilities,omitempty"`
+		Clock                 int64    `json:"clock,omitempty"`
+		CreationTime          int64    `json:"creationTime,omitempty"`
+		ID                    string   `json:"id,omitempty"`
+		LastModified          int64    `json:"lastModified,omitempty"`
+		MulticastLimit        int64    `json:"multicastLimit,omitempty"`
+		Name                  string   `json:"name,omitempty"`
+		Nwid                  string   `json:"nwid,omitempty"`
+		Objtype               string   `json:"objtype,omitempty"`
+		Private               bool     `json:"private,omitempty"`
+		Revision              int64    `json:"revision,omitempty"`
 		Routes                []struct {
-			Target string `json:"target"`
-			Via    string `json:"via"`
-		} `json:"routes"`
+			Target string `json:"target,omitempty"`
+			Via    string `json:"via,omitempty"`
+		} `json:"routes,omitempty"`
 		Rules []struct {
-			EtherType int64  `json:"ethertype"`
-			Not       bool   `json:"not"`
-			Or        bool   `json:"or"`
-			Type      string `json:"type"`
-		} `json:"rules"`
-		Tags             []string `json:"tags"`
-		TotalMemberCount int64    `json:"totalMemberCount"`
+			EtherType int64  `json:"ethertype,omitempty"`
+			Not       bool   `json:"not,omitempty"`
+			Or        bool   `json:"or,omitempty"`
+			Type      string `json:"type,omitempty"`
+		} `json:"rules,omitempty"`
+		Tags             []string `json:"tags,omitempty"`
+		TotalMemberCount int64    `json:"totalMemberCount,omitempty"`
 		V4AssignMode     struct {
-			Properties struct{} `json:"properties"`
-		} `json:"v4AssignMode"`
+			Properties struct{} `json:"properties,omitempty"`
+		} `json:"v4AssignMode,omitempty"`
 		V6AssignMode struct {
-			Properties struct{} `json:"properties"`
-		} `json:"v6AssignMode"`
-	} `json:"config"`
-	Description       string `json:"description"`
-	OnlineMemberCount int64  `json:onlineMemberCount`
+			Properties struct{} `json:"properties,omitempty"`
+		} `json:"v6AssignMode,omitempty"`
+	} `json:"config,omitempty"`
+	Description       string `json:"description,omitempty"`
+	OnlineMemberCount int64  `json:"onlineMemberCount,omitempty"`
 	Permissions       struct {
 		ID struct {
-			A bool `json:"a"`
-			D bool `json:"d"`
-			M bool `json:"m"`
-			O bool `json:"o"`
-			R bool `json:"r"`
-			T bool `json:"t"`
-		} `json:"{id}"`
-	} `json:"permissions"`
-	RulesSource string `json:"rulesSource"`
+			A bool `json:"a,omitempty"`
+			D bool `json:"d,omitempty"`
+			M bool `json:"m,omitempty"`
+			O bool `json:"o,omitempty"`
+			R bool `json:"r,omitempty"`
+			T bool `json:"t,omitempty"`
+		} `json:"{id},omitempty"`
+	} `json:"permissions,omitempty"`
+	RulesSource string `json:"rulesSource,omitempty"`
 	TagsByName  struct {
-		Properties struct{} `json:"properties"`
-	} `json:"tagsByName"`
+		Properties struct{} `json:"properties,omitempty"`
+	} `json:"tagsByName,omitempty"`
 }
 
 // NetworkService handles network endpoint
@@ -99,4 +99,25 @@ func (ns *NetworkService) Get(id string) (*Network, *http.Response, error) {
 	}
 
 	return &n, resp, nil
+}
+
+func (ns *NetworkService) Delete(id string) (*http.Response, error) {
+	path := fmt.Sprintf("network/%s", id)
+
+	req, err := ns.client.NewRequest("DELETE", path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := ns.client.Do(req, nil)
+	if err != nil {
+		switch err.(type) {
+		case *Error:
+			if err.(*Error).Message == "network not found" {
+				return resp, err
+			}
+		}
+		return resp, err
+	}
+	return resp, nil
 }
