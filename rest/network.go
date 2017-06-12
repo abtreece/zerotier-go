@@ -67,6 +67,27 @@ type Network struct {
 // NetworkService handles network endpoint
 type NetworkService service
 
+func (ns *NetworkService) Create(id string) (*http.Response, error) {
+	path := fmt.Sprintf("network/%s", id)
+
+	req, err := ns.client.NewRequest("POST", path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := ns.client.Do(req, nil)
+	if err != nil {
+		switch err.(type) {
+		case *Error:
+			if err.(*Error).Message == "network not created" {
+				return resp, err
+			}
+		}
+		return resp, err
+	}
+	return resp, nil
+}
+
 func (ns *NetworkService) List() ([]*Network, *http.Response, error) {
 	path := fmt.Sprintf("network")
 
