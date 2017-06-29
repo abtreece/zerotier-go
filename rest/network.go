@@ -131,10 +131,6 @@ func (ns *NetworkService) Update(b []byte) (*Network, *http.Response, error) {
 		panic(err)
 	}
 
-	for key, value := range d {
-		fmt.Println("Key:", key, "Value:", value)
-	}
-
 	path := fmt.Sprintf("network/%s", d["id"])
 
 	req, err := ns.client.NewRequest("POST", path, &d)
