@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -67,27 +68,6 @@ type Network struct {
 // NetworkService handles network endpoint
 type NetworkService service
 
-func (ns *NetworkService) Create(id string) (*http.Response, error) {
-	path := fmt.Sprintf("network/%s", id)
-
-	req, err := ns.client.NewRequest("POST", path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := ns.client.Do(req, nil)
-	if err != nil {
-		switch err.(type) {
-		case *Error:
-			if err.(*Error).Message == "network not created" {
-				return resp, err
-			}
-		}
-		return resp, err
-	}
-	return resp, nil
-}
-
 func (ns *NetworkService) List() ([]*Network, *http.Response, error) {
 	path := fmt.Sprintf("network")
 
@@ -119,6 +99,54 @@ func (ns *NetworkService) Get(id string) (*Network, *http.Response, error) {
 		return nil, resp, err
 	}
 
+	return &n, resp, nil
+}
+
+func (ns *NetworkService) Create(id string) (*http.Response, error) {
+	path := fmt.Sprintf("network/%s", id)
+
+	req, err := ns.client.NewRequest("POST", path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := ns.client.Do(req, nil)
+	if err != nil {
+		switch err.(type) {
+		case *Error:
+			if err.(*Error).Message == "network not created" {
+				return resp, err
+			}
+		}
+		return resp, err
+	}
+	return resp, nil
+}
+
+func (ns *NetworkService) Update(b []byte) (*Network, *http.Response, error) {
+
+	var d map[string]interface{}
+
+	if err := json.Unmarshal(b, &d); err != nil {
+		panic(err)
+	}
+
+	for key, value := range d {
+		fmt.Println("Key:", key, "Value:", value)
+	}
+
+	path := fmt.Sprintf("network/%s", d["id"])
+
+	req, err := ns.client.NewRequest("POST", path, &d)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var n Network
+	resp, err := ns.client.Do(req, &n)
+	if err != nil {
+		return nil, resp, err
+	}
 	return &n, resp, nil
 }
 
