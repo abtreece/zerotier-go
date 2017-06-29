@@ -102,29 +102,8 @@ func (ns *NetworkService) Get(id string) (*Network, *http.Response, error) {
 	return &n, resp, nil
 }
 
-func (ns *NetworkService) Create(id string) (*http.Response, error) {
-	path := fmt.Sprintf("network/%s", id)
-
-	req, err := ns.client.NewRequest("POST", path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := ns.client.Do(req, nil)
-	if err != nil {
-		switch err.(type) {
-		case *Error:
-			if err.(*Error).Message == "network not created" {
-				return resp, err
-			}
-		}
-		return resp, err
-	}
-	return resp, nil
-}
-
+// Updates a network or creates a new network if no network ID is provided
 func (ns *NetworkService) Update(b []byte) (*Network, *http.Response, error) {
-
 	var d map[string]interface{}
 
 	if err := json.Unmarshal(b, &d); err != nil {
