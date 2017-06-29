@@ -11,7 +11,7 @@ Usage
 -----
 Download the library into your `$GOPATH`:
 
-	$ go get github.com/abtreece/zerotier.go
+	$ go get github.com/abtreece/zerotier-go
 
 Import the library into your tool:
 
