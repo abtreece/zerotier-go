@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	defaultEndpoint  = "https://my.zerotier.com/api/"
-	defaultUserAgent = "zerotier-go"
+	defaultEndpoint    = "https://my.zerotier.com/api/"
+	defaultUserAgent   = "zerotier-go"
+	defaultContentType = "application/json"
 )
 
 type Doer interface {
@@ -26,6 +27,8 @@ type Client struct {
 	APIToken string
 
 	UserAgent string
+
+	ContentType string
 
 	common service
 
@@ -42,9 +45,10 @@ func NewClient(httpClient Doer, options ...func(*Client)) *Client {
 	}
 
 	c := &Client{
-		httpClient: httpClient,
-		Endpoint:   endpoint,
-		UserAgent:  defaultUserAgent,
+		httpClient:  httpClient,
+		Endpoint:    endpoint,
+		UserAgent:   defaultUserAgent,
+		ContentType: defaultContentType,
 	}
 
 	c.common.client = c
@@ -129,6 +133,7 @@ func (c *Client) NewRequest(method, path string, body interface{}) (*http.Reques
 
 	req.Header.Add("Authorization", "bearer "+c.APIToken)
 	req.Header.Add("User-Agent", c.UserAgent)
+	req.Header.Add("Content-Type", c.ContentType)
 	return req, nil
 }
 
