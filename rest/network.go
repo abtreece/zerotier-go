@@ -6,6 +6,19 @@ import (
 	"net/http"
 )
 
+type Network struct {
+	ID                string      `json:"id,omitempty"`
+	Type              string      `json:"type,omitempty"`
+	Clock             int64       `json:"clock,omitempty"`
+	UI                UI          `json:"ui,omitempty"`
+	Config            Config      `json:"config,omitempty"`
+	Description       string      `json:"description,omitempty"`
+	OnlineMemberCount int64       `json:"onlineMemberCount,omitempty"`
+	Permissions       Permissions `json:"permissions,omitempty"`
+	RulesSource       string      `json:"rulesSource,omitempty"`
+	TagsByName        TagsByName  `json:"tagsByName,omitempty"`
+}
+
 type Config struct {
 	ActiveMemberCount     int64        `json:"activeMemberCount,omitempty"`
 	AuthTokens            []string     `json:"authTokens,omitempty"`
@@ -47,19 +60,6 @@ type V4AssignMode struct {
 
 type V6AssignMode struct {
 	Properties Properties `json:"properties,omitempty"`
-}
-
-type Network struct {
-	ID                string      `json:"id,omitempty"`
-	Type              string      `json:"type,omitempty"`
-	Clock             int64       `json:"clock,omitempty"`
-	UI                UI          `json:"ui,omitempty"`
-	Config            Config      `json:"config,omitempty"`
-	Description       string      `json:"description,omitempty"`
-	OnlineMemberCount int64       `json:"onlineMemberCount,omitempty"`
-	Permissions       Permissions `json:"permissions,omitempty"`
-	RulesSource       string      `json:"rulesSource,omitempty"`
-	TagsByName        TagsByName  `json:"tagsByName,omitempty"`
 }
 
 type UI struct {
